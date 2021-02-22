@@ -1,60 +1,60 @@
-# hyperspace
-[![Build Status](https://travis-ci.com/andrewosh/hyperspace.svg?token=WgJmQm3Kc6qzq1pzYrkx&branch=master)](https://travis-ci.com/andrewosh/hyperspace)
+# dhub
 
-> Hypercores, batteries included.
 
-Hyperspace is a lightweight server that provides remote access to Hypercores and a Hyperswarm instance. It exposes a simple [RPC interface](https://github.com/hyperspace-org/rpc) that can be accessed with the [Hyperspace client for Node.js](https://github.com/hyperspace-org/client).
+> Build decentralized data hubs.
 
-The RPC API's designed to be minimal, maintaining parity with Hypercore and the [`@corestore/networker`](https://github.com/andrewosh/corestore-networker) but with few extras.
+dHub is a lightweight server that provides remote access to dDatabases and a dSwarm instance. It exposes a simple [RPC interface](https://github.com/org/rpc) that can be accessed with the [dHub client for Node.js](https://github.com/org/client).
+
+The RPC API's designed to be minimal, maintaining parity with dDatabase and the [`@dwebvault/networker`](https://github.com/corestore-networker) but with few extras.
 
 Features include:
-* A `RemoteCorestore` interface for creating namespaced [`Corestore`](https://github.com/andrewosh/corestore) instances. 
-* A `RemoteNetworker` interface for managing [Hyperswarm DHT](https://github.com/hyperswarm/hyperswarm) connections. Supports stream-level extensions. 
-* A `RemoteHypercore` interface that feels exactly like normal ol' [`Hypercore`](https://github.com/hypercore-protocol/hypercore), with [few exceptions](TODO). Extensions included.
+* A `RemoteDWebVault` interface for creating namespaced [`DWebVault`](https://github.com/corestore) instances. 
+* A `RemoteNetworker` interface for managing [dSwarm DHT](https://github.com/hyperswarm) connections. Supports stream-level extensions. 
+* A `RemoteDDatabase` interface that feels exactly like normal ol' [`DDatabase`](https://github.com/protocol/dDatabase), with [few exceptions](TODO). Extensions included.
 
-#### Already using the Hyperdrive daemon?
-With Hyperspace, most of the [Hyperdrive daemon's](https://github.com/hypercore-protocol/hyperdrive-daemon) functionality has been moved into "userland" -- instead of providing remote access to Hyperdrives, the regular [`hyperdrive`](https://github.com/hypercore-protocol/hyperdrive) module can be used with remote Hypercores.
+#### Already using the dDrive daemon?
+With dHub, most of the [dDrive daemon's](https://github.com/protocol/dDrive-daemon) functionality has been moved into "userland" -- instead of providing remote access to dDrives, the regular [`ddrive`](https://github.com/protocol/dDrive) module can be used with remote dDatabases.
 
-If you're currently using the Hyperdrive daemon with FUSE and/or the daemon CLI, take a look at the upgrade instructions in [`@hyperspace/hyperdrive`](https://github.com/hyperspace-org/hyperdrive-service), which is our new Hyperdrive companion service for handling FUSE/CLI alongside Hyperspace.
+If you're currently using the dDrive daemon with FUSE and/or the daemon CLI, take a look at the upgrade instructions in [`@dhub/ddrive`](https://github.com/org/dDrive-service), which is our new dDrive companion service for handling FUSE/CLI alongside dHub.
 
-__Note: The first time you run Hyperspace, it will detect your old Hyperdrive daemon installation and do an automatic migration. You can postpone the migration by starting the server with the `--no-migrate` flag (`hyperspace --no-migrate`).__
+__Note: The first time you run dHub, it will detect your old dDrive daemon installation and do an automatic migration. You can postpone the migration by starting the server with the `--no-migrate` flag (`dHub --no-migrate`).__
 
 ### Installation
 ```
-npm i hyperspace -g
+npm i dhub -g
 ```
 
 ### Getting Started
-When installed globally, you can use the `hyperspace` CLI tool to start the server:
+When installed globally, you can use the `dhub` CLI tool to start the server:
 ```
-❯ hyperspace --no-migrate  // Starts the server without performing the Hyperdrive daemon migration
+❯ dHub --no-migrate  // Starts the server without performing the dDrive daemon migration
 ```
 
-The `hyperspace` command supports the following flags:
+The `dhub` command supports the following flags:
 ```
---bootstrap   // Hyperswarm bootstrapping options (see Hyperswarm docs).
+--bootstrap   // dSwarm bootstrapping options (see dSwarm docs).
 --host        // Host to bind to.
 --port        // Port to bind to (if specified, will use TCP).
 --memory-only // Run in memory-only mode.
 --no-announce // Never announce topics on the DHT.
---no-migrate  // Do not attempt to migrate the Hyperdrive daemon's storage to Hyperspace.
+--no-migrate  // Do not attempt to migrate the dDrive daemon's storage to dHub.
 --repl        // Start the server with a debugging REPL.
 ```
 
-By default, Hyperspace binds to a UNIX domain socket (or named pipe on Windows) at `~/.hyperspace/hyperspace.sock`.
+By default, dHub binds to a UNIX domain socket (or named pipe on Windows) at `~/.dhub/dhub.sock`.
 
-Once the server's started, you can use the client to create and manage remote Hypercores. If you'd like the use the Hyperdrive CLI, check out the [`@hyperspace/hyperdrive` docs](https://github.com/hyperspace-org/hyperdrive-service).
+Once the server's started, you can use the client to create and manage remote dDatabases. If you'd like the use the dDrive CLI, check out the [`@dhub/ddrive` docs](https://github.com/org/dDrive-service).
 
 ### API
-To work with Hyperspace, you'll probably want to start with the [Node.js client library](https://github.com/hyperspace-org/client). The README over there provides detailed API info.
+To work with dHub, you'll probably want to start with the [Node.js client library](https://github.com/org/client). The README over there provides detailed API info.
 
 ### Simulator
 
-Hyperspace includes a "simulator" that can be used to create one-off Hyperspace instances, which can be used for testing.
+dHub includes a "simulator" that can be used to create one-off dHub instances, which can be used for testing.
 
 ```js
-const simulator = require('hyperspace/simulator')
-// client is a HyperspaceClient, server is a HyperspaceServer
+const simulator = require('dhub/simulator')
+// client is a DHubClient, server is a DHubServer
 const { client, server, cleanup } = await simulator()
 ```
 
