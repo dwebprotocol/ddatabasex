@@ -29,11 +29,11 @@
   },
   "homepage": "https://github.com/hyperspace-org/hyperspace#readme",
   "dependencies": {
-    "@corestore/networker": "^1.0.3",
+    "@dwebvault/networker": "^1.0.0",
     "@hyperspace/client": "^1.14.0",
     "@hyperspace/migration-tool": "^1.1.2",
     "@hyperspace/rpc": "^1.8.0",
-    "corestore": "^5.7.3",
+    "dwebvault": "^1.0.0",
     "hypercore": "^9.5.4",
     "hypercore-cache": "^1.0.2",
     "hypercore-default-storage": "^1.0.0",
