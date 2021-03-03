@@ -3,19 +3,19 @@
 
 > Build decentralized data hubs.
 
-dHub is a lightweight server that provides remote access to dDatabases and a dSwarm instance. It exposes a simple [RPC interface](https://github.com/org/rpc) that can be accessed with the [dHub client for Node.js](https://github.com/org/client).
+dHub is a lightweight server that provides remote access to dDatabases and a dSwarm instance. It exposes a simple [RPC interface](https://github.com/dwebprotocol/dhub-rpc) that can be accessed with the [dHub client for Node.js](https://github.com/dwebprotocol/dhub-client).
 
-The RPC API's designed to be minimal, maintaining parity with dDatabase and the [`@dwebvault/networker`](https://github.com/corestore-networker) but with few extras.
+The RPC API's designed to be minimal, maintaining parity with dDatabase and the [`@basestore/networker`](https://github.com/dwebprotocol/basestore-networker) but with few extras.
 
 Features include:
-* A `RemoteDWebVault` interface for creating namespaced [`DWebVault`](https://github.com/corestore) instances. 
-* A `RemoteNetworker` interface for managing [dSwarm DHT](https://github.com/hyperswarm) connections. Supports stream-level extensions. 
-* A `RemoteDDatabase` interface that feels exactly like normal ol' [`DDatabase`](https://github.com/protocol/dDatabase), with [few exceptions](TODO). Extensions included.
+* A `RemoteBasestore` interface for creating namespaced [`Basestore`](https://github.com/dwebprotocol/basestore) instances. 
+* A `RemoteNetworker` interface for managing [dSwarm DHT](https://github.com/dwebprotocol/dswarm) connections. Supports stream-level extensions. 
+* A `RemoteDDatabase` interface that feels exactly like normal ol' [`DDatabase`](https://github.com/dwebprotocol/ddatabase), with [few exceptions](TODO). Extensions included.
 
 #### Already using the dDrive daemon?
-With dHub, most of the [dDrive daemon's](https://github.com/protocol/dDrive-daemon) functionality has been moved into "userland" -- instead of providing remote access to dDrives, the regular [`ddrive`](https://github.com/protocol/dDrive) module can be used with remote dDatabases.
+With dHub, most of the [dDrive daemon's](https://github.com/dwebprotocol/ddrive-daemon) functionality has been moved into "userland" -- instead of providing remote access to dDrives, the regular [`ddrive`](https://github.com/dwebprotocol/ddrive) module can be used with remote dDatabases.
 
-If you're currently using the dDrive daemon with FUSE and/or the daemon CLI, take a look at the upgrade instructions in [`@dhub/ddrive`](https://github.com/org/dDrive-service), which is our new dDrive companion service for handling FUSE/CLI alongside dHub.
+If you're currently using the dDrive daemon with FUSE and/or the daemon CLI, take a look at the upgrade instructions in [`@dhub/ddrive`](https://github.com/dwebprotocol/ddrive-service), which is our new dDrive companion service for handling FUSE/CLI alongside dHub.
 
 __Note: The first time you run dHub, it will detect your old dDrive daemon installation and do an automatic migration. You can postpone the migration by starting the server with the `--no-migrate` flag (`dHub --no-migrate`).__
 
@@ -43,10 +43,10 @@ The `dhub` command supports the following flags:
 
 By default, dHub binds to a UNIX domain socket (or named pipe on Windows) at `~/.dhub/dhub.sock`.
 
-Once the server's started, you can use the client to create and manage remote dDatabases. If you'd like the use the dDrive CLI, check out the [`@dhub/ddrive` docs](https://github.com/org/dDrive-service).
+Once the server's started, you can use the client to create and manage remote dDatabases. If you'd like the use the dDrive CLI, check out the [`@dhub/ddrive` docs](https://github.com/dwebprotocol/ddrive-service).
 
 ### API
-To work with dHub, you'll probably want to start with the [Node.js client library](https://github.com/org/client). The README over there provides detailed API info.
+To work with dHub, you'll probably want to start with the [Node.js client library](https://github.com/dwebprotocol/dhub-client). The README over there provides detailed API info.
 
 ### Simulator
 
