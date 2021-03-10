@@ -1,6 +1,6 @@
 {
   "name": "dhub",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A CLI for managing dDatabases",
   "main": "index.js",
   "bin": {
@@ -15,11 +15,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/dwebprotocol/dhub.git"
+    "url": "https://github.com/dwebprotocol/dhub.git"
   },
   "keywords": [
     "ddatabases",
-    "basestore",
+    "basestorevault",
     "rpc"
   ],
   "author": "PeepsLabs <peepslabs@gmail.com>",
@@ -33,12 +33,12 @@
     "@dhub/client": "^1.0.0",
     "@dhub/migration-tool": "^1.0.0",
     "@dhub/rpc": "^1.0.0",
-    "basestore": "^1.0.0",
+    "basestorevault": "^1.0.0",
     "ddatabase": "^10.0.0",
     "@ddatabase/cache": "^1.0.0",
     "@ddatabase/default-storage": "^1.0.0",
     "dswarm": "^1.0.0",
-    "dwebtrie": "^1.0.0",
+    "dwebtrie": "^3.0.1",
     "inspect-custom-symbol": "^1.1.1",
     "minimist": "^1.2.5",
     "nanoresource-promise": "^1.2.2",

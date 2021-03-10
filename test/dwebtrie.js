@@ -2,8 +2,9 @@
 // (with modifications to inject RemoteDDatabases)
 
 const tape = require('tape')
+const dwebtrie = require('dwebtrie')
 const ram = require('random-access-memory')
-const byteStream = require('@ddatabase/byte-stream')
+
 const DHubClient = require('../client')
 const DHubServer = require('../server')
 
@@ -11,24 +12,18 @@ let server = null
 let client = null
 let cleanup = null
 
-function createLocal (numRecords, recordSize, cb) {
+function create (key, opts) {
   const basestorevault = client.basestorevault()
-  const base = basestorevault.get()
-
-  const records = []
-  for (let i = 0; i < numRecords; i++) {
-    const record = Buffer.allocUnsafe(recordSize).fill(Math.floor(Math.random() * 10))
-    records.push(record)
-  }
-
-  base.append(records, err => {
-    if (err) return cb(err)
-    const stream = byteStream()
-    return cb(null, base, base, stream, records)
+  const feed = basestorevault.get(key)
+  return dwebtrie(null, null, {
+    valueEncoding: 'json',
+    ...opts,
+    extension: false,
+    feed
   })
 }
 
-require('@ddatabase/byte-stream/test/helpers/create').createLocal = createLocal
+require('dwebtrie/test/helpers/create').create = create
 
 tape('start', async function (t) {
   server = new DHubServer({ storage: ram })
@@ -45,7 +40,14 @@ tape('start', async function (t) {
   t.end()
 })
 
-require('@ddatabase/byte-stream/test/basic')
+require('dwebtrie/test/basic')
+require('dwebtrie/test/diff')
+require('dwebtrie/test/hidden')
+require('dwebtrie/test/iterator')
+require('dwebtrie/test/history')
+// require('dwebtrie/test/watch')
+require('dwebtrie/test/closest')
+require('dwebtrie/test/deletes')
 
 tape('end', async function (t) {
   await cleanup()

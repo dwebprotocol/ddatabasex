@@ -1,12 +1,12 @@
-const hypertrie = require('hypertrie')
-const { Header } = require('hypertrie/lib/messages')
+const dwebtrie = require('dwebtrie')
+const { Header } = require('dwebtrie/lib/messages')
 
-module.exports = function startTrieExtension (corestore) {
-  corestore.on('feed', function (feed) {
+module.exports = function startTrieExtension (basestorevault) {
+  basestorevault.on('feed', function (feed) {
     onHeaderType(feed, function (type) {
-      if (type !== 'hypertrie') return
+      if (type !== 'dwebtrie') return
       // fire up the trie to answer extensions, when the feed is gc'ed it'll be gc'ed
-      hypertrie(null, null, { feed }).on('error', noop)
+      dwebtrie(null, null, { feed }).on('error', noop)
     })
   })
 }

@@ -2,8 +2,8 @@ const ram = require('random-access-memory')
 
 const { Server, Client } = require('.')
 
-module.exports = async function createHyperspaceSimulator () {
-  const simulatorId = `hyperspace-simulator-${process.pid}`
+module.exports = async function createDHubSimulator () {
+  const simulatorId = `dhub-simulator-${process.pid}`
 
   const server = new Server({
     host: simulatorId,
