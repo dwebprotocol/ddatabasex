@@ -1,0 +1,62 @@
+# dhub
+
+
+> Build decentralized data hubs.
+
+dHub is a lightweight server that provides remote access to dDatabases and a dSwarm instance. It exposes a simple [RPC interface](https://github.com/dwebprotocol/dhub-rpc) that can be accessed with the [dHub client for Node.js](https://github.com/dwebprotocol/dhub-client).
+
+The RPC API's designed to be minimal, maintaining parity with dDatabase and the [`@basestore/networker`](https://github.com/dwebprotocol/basestore-networker) but with few extras.
+
+Features include:
+* A `RemoteBasestore` interface for creating namespaced [`Basestore`](https://github.com/dwebprotocol/basestore) instances. 
+* A `RemoteNetworker` interface for managing [dSwarm DHT](https://github.com/dwebprotocol/dswarm) connections. Supports stream-level extensions. 
+* A `RemoteDDatabase` interface that feels exactly like normal ol' [`DDatabase`](https://github.com/dwebprotocol/ddatabase), with [few exceptions](TODO). Extensions included.
+
+#### Already using the dDrive daemon?
+With dHub, most of the [dDrive daemon's](https://github.com/dwebprotocol/ddrive-daemon) functionality has been moved into "userland" -- instead of providing remote access to dDrives, the regular [`ddrive`](https://github.com/dwebprotocol/ddrive) module can be used with remote dDatabases.
+
+If you're currently using the dDrive daemon with FUSE and/or the daemon CLI, take a look at the upgrade instructions in [`@dhub/ddrive`](https://github.com/dwebprotocol/ddrive-service), which is our new dDrive companion service for handling FUSE/CLI alongside dHub.
+
+__Note: The first time you run dHub, it will detect your old dDrive daemon installation and do an automatic migration. You can postpone the migration by starting the server with the `--no-migrate` flag (`dHub --no-migrate`).__
+
+### Installation
+```
+npm i dhub -g
+```
+
+### Getting Started
+When installed globally, you can use the `dhub` CLI tool to start the server:
+```
+❯ dHub --no-migrate  // Starts the server without performing the dDrive daemon migration
+```
+
+The `dhub` command supports the following flags:
+```
+--bootstrap   // dSwarm bootstrapping options (see dSwarm docs).
+--host        // Host to bind to.
+--port        // Port to bind to (if specified, will use TCP).
+--memory-only // Run in memory-only mode.
+--no-announce // Never announce topics on the DHT.
+--no-migrate  // Do not attempt to migrate the dDrive daemon's storage to dHub.
+--repl        // Start the server with a debugging REPL.
+```
+
+By default, dHub binds to a UNIX domain socket (or named pipe on Windows) at `~/.dhub/dhub.sock`.
+
+Once the server's started, you can use the client to create and manage remote dDatabases. If you'd like the use the dDrive CLI, check out the [`@dhub/ddrive` docs](https://github.com/dwebprotocol/ddrive-service).
+
+### API
+To work with dHub, you'll probably want to start with the [Node.js client library](https://github.com/dwebprotocol/dhub-client). The README over there provides detailed API info.
+
+### Simulator
+
+dHub includes a "simulator" that can be used to create one-off dHub instances, which can be used for testing.
+
+```js
+const simulator = require('dhub/simulator')
+// client is a DHubClient, server is a DHubServer
+const { client, server, cleanup } = await simulator()
+```
+
+### License
+MIT

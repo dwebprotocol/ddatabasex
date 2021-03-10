@@ -1,0 +1,50 @@
+{
+  "name": "dhub",
+  "version": "0.0.0",
+  "description": "A CLI for managing dDatabases",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "standard && tape test/*.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dwebprotocol/dhub.git"
+  },
+  "keywords": [
+    "dDatabases",
+    "basestorevault",
+    "rpc"
+  ],
+  "author": "PeepsLabs <peepslabs@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dwebprotocol/dhub/issues"
+  },
+  "homepage": "PeepsLabs <peepslabs@gmail.com>",
+  "dependencies": {
+    "@dhub/client": "git://github.com/dwebprotocol/dhub-client.git#398a0cd6b4ef55b04da4305912833f908d6eb4e6",
+    "@dhub/rpc": "git://github.com/dwebprotocol/dhub-rpc.git#c8d87231ab41b7e6957dad628c49860a8b776144",
+    "basestorevault": "^1.0.0",
+    "dwebstore-swarm-networking": "^2.0.0",
+    "@ddatabase/cache": "^1.0.0",
+    "@ddatabase/default-storage": "^1.0.0",
+    "dwebtrie": "^1.0.0",
+    "inspect-custom-symbol": "^1.1.1",
+    "nanoresource-promise": "^1.2.2"
+  },
+  "devDependencies": {
+    "@dswarm/dht": "^1.0.0",
+    "compare": "^2.0.0",
+    "@ddatabase/byte-stream": "^1.0.0",
+    "ddrive": "^5.0.0",
+    "protocol-buffers": "^4.1.2",
+    "random-access-memory": "^3.1.1",
+    "standard": "^14.3.4",
+    "stream-collector": "^1.0.1",
+    "tape": "^5.0.1",
+    "tmp-promise": "^3.0.2"
+  }
+}
