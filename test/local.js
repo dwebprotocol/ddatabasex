@@ -1,20 +1,20 @@
 const test = require('tape')
-const hypertrie = require('hypertrie')
-const hyperdrive = require('hyperdrive')
+const dwebtrie = require('dwebtrie')
+const ddrive = require('ddrive')
 
 const { createOne } = require('./helpers/create')
 
-test('can open a core', async t => {
+test('can open a base', async t => {
   const { client, cleanup } = await createOne()
 
-  const corestore = client.corestore()
-  const core = corestore.get()
-  await core.ready()
+  const basestore = client.basestore()
+  const base = basestore.get()
+  await base.ready()
 
-  t.same(core.byteLength, 0)
-  t.same(core.length, 0)
-  t.same(core.key.length, 32)
-  t.same(core.discoveryKey.length, 32)
+  t.same(base.byteLength, 0)
+  t.same(base.length, 0)
+  t.same(base.key.length, 32)
+  t.same(base.discoveryKey.length, 32)
 
   await cleanup()
   t.end()
@@ -23,12 +23,12 @@ test('can open a core', async t => {
 test('can get a block', async t => {
   const { client, cleanup } = await createOne()
 
-  const corestore = client.corestore()
-  const core = corestore.get()
-  await core.ready()
+  const basestore = client.basestore()
+  const base = basestore.get()
+  await base.ready()
 
-  await core.append(Buffer.from('hello world', 'utf8'))
-  const block = await core.get(0)
+  await base.append(Buffer.from('hello world', 'utf8'))
+  const block = await base.get(0)
   t.same(block.toString('utf8'), 'hello world')
 
   await cleanup()
@@ -38,25 +38,25 @@ test('can get a block', async t => {
 test('length/byteLength update correctly on append', async t => {
   const { client, cleanup } = await createOne()
 
-  const corestore = client.corestore()
-  const core = corestore.get()
-  await core.ready()
+  const basestore = client.basestore()
+  const base = basestore.get()
+  await base.ready()
 
   let appendedCount = 0
-  core.on('append', () => {
+  base.on('append', () => {
     appendedCount++
   })
 
   const buf = Buffer.from('hello world', 'utf8')
-  let seq = await core.append(buf)
+  let seq = await base.append(buf)
   t.same(seq, 0)
-  t.same(core.byteLength, buf.length)
-  t.same(core.length, 1)
+  t.same(base.byteLength, buf.length)
+  t.same(base.length, 1)
 
-  seq = await core.append([buf, buf])
+  seq = await base.append([buf, buf])
   t.same(seq, 1)
-  t.same(core.byteLength, buf.length * 3)
-  t.same(core.length, 3)
+  t.same(base.byteLength, buf.length * 3)
+  t.same(base.length, 3)
 
   t.same(appendedCount, 2)
 
@@ -67,13 +67,13 @@ test('length/byteLength update correctly on append', async t => {
 test('downloaded gives the correct result after append', async t => {
   const { client, cleanup } = await createOne()
 
-  const corestore = client.corestore()
-  const core = corestore.get()
-  await core.ready()
+  const basestore = client.basestore()
+  const base = basestore.get()
+  await base.ready()
 
   const buf = Buffer.from('hello world', 'utf8')
-  await core.append([buf, buf, buf])
-  const downloaded = await core.downloaded()
+  await base.append([buf, buf, buf])
+  const downloaded = await base.downloaded()
   t.same(downloaded, 3)
 
   await cleanup()
@@ -83,21 +83,21 @@ test('downloaded gives the correct result after append', async t => {
 test('update with current length returns', async t => {
   const { client, cleanup } = await createOne()
 
-  const corestore = client.corestore()
-  const core = corestore.get()
-  await core.ready()
+  const basestore = client.basestore()
+  const base = basestore.get()
+  await base.ready()
 
   const buf = Buffer.from('hello world', 'utf8')
-  const seq = await core.append(buf)
+  const seq = await base.append(buf)
   t.same(seq, 0)
-  t.same(core.byteLength, buf.length)
-  t.same(core.length, 1)
+  t.same(base.byteLength, buf.length)
+  t.same(base.length, 1)
 
-  await core.update(1)
+  await base.update(1)
   t.pass('update terminated')
 
   try {
-    await core.update({ ifAvailable: true })
+    await base.update({ ifAvailable: true })
     t.fail('should not get here')
   } catch (err) {
     t.true(err, 'should error with no peers')
@@ -110,9 +110,9 @@ test('update with current length returns', async t => {
 test('appending many large blocks works', async t => {
   const { client, cleanup } = await createOne()
 
-  const corestore = client.corestore()
-  const core = corestore.get()
-  await core.ready()
+  const basestore = client.basestore()
+  const base = basestore.get()
+  await base.ready()
 
   const NUM_BLOCKS = 200
   const BLOCK_SIZE = 1e5
@@ -120,9 +120,9 @@ test('appending many large blocks works', async t => {
   const bufs = (new Array(NUM_BLOCKS).fill(0)).map(() => {
     return Buffer.allocUnsafe(BLOCK_SIZE)
   })
-  const seq = await core.append(bufs)
+  const seq = await base.append(bufs)
   t.same(seq, 0)
-  t.same(core.byteLength, NUM_BLOCKS * BLOCK_SIZE)
+  t.same(base.byteLength, NUM_BLOCKS * BLOCK_SIZE)
 
   await cleanup()
   t.end()
@@ -131,27 +131,27 @@ test('appending many large blocks works', async t => {
 test('seek works correctly', async t => {
   const { client, cleanup } = await createOne()
 
-  const corestore = client.corestore()
-  const core = corestore.get()
-  await core.ready()
+  const basestore = client.basestore()
+  const base = basestore.get()
+  await base.ready()
 
   const buf = Buffer.from('hello world', 'utf8')
-  await core.append([buf, buf])
+  await base.append([buf, buf])
 
   {
-    const { seq, blockOffset } = await core.seek(0)
+    const { seq, blockOffset } = await base.seek(0)
     t.same(seq, 0)
     t.same(blockOffset, 0)
   }
 
   {
-    const { seq, blockOffset } = await core.seek(5)
+    const { seq, blockOffset } = await base.seek(5)
     t.same(seq, 0)
     t.same(blockOffset, 5)
   }
 
   {
-    const { seq, blockOffset } = await core.seek(15)
+    const { seq, blockOffset } = await base.seek(15)
     t.same(seq, 1)
     t.same(blockOffset, 4)
   }
@@ -163,19 +163,19 @@ test('seek works correctly', async t => {
 test('has works correctly', async t => {
   const { client, cleanup } = await createOne()
 
-  const corestore = client.corestore()
-  const core = corestore.get()
-  await core.ready()
+  const basestore = client.basestore()
+  const base = basestore.get()
+  await base.ready()
 
   const buf = Buffer.from('hello world', 'utf8')
-  await core.append(buf)
+  await base.append(buf)
 
-  const doesHave = await core.has(0)
-  const doesNotHave = await core.has(1)
+  const doesHave = await base.has(0)
+  const doesNotHave = await base.has(1)
   t.true(doesHave)
   t.false(doesNotHave)
 
-  await core.close()
+  await base.close()
   await cleanup()
   t.end()
 })
@@ -183,16 +183,16 @@ test('has works correctly', async t => {
 test('download works correctly', async t => {
   const { client, cleanup } = await createOne()
 
-  const corestore = client.corestore()
-  const core = corestore.get()
-  await core.ready()
+  const basestore = client.basestore()
+  const base = basestore.get()
+  await base.ready()
 
   const buf = Buffer.from('hello world', 'utf8')
-  await core.append(buf)
+  await base.append(buf)
 
   for (let i = 0; i < 3; i++) {
-    const prom = core.download({ start: 0, end: 10 })
-    await core.undownload(prom)
+    const prom = base.download({ start: 0, end: 10 })
+    await base.undownload(prom)
 
     try {
       await prom
@@ -201,7 +201,7 @@ test('download works correctly', async t => {
     }
   }
 
-  await core.close()
+  await base.close()
   await cleanup()
   t.end()
 })
@@ -209,42 +209,42 @@ test('download works correctly', async t => {
 test('valueEncodings work', async t => {
   const { client, cleanup } = await createOne()
 
-  const corestore = client.corestore()
-  const core = corestore.get({ valueEncoding: 'utf8' })
-  await core.ready()
+  const basestore = client.basestore()
+  const base = basestore.get({ valueEncoding: 'utf8' })
+  await base.ready()
 
-  await core.append('hello world')
-  const block = await core.get(0)
+  await base.append('hello world')
+  const block = await base.get(0)
   t.same(block, 'hello world')
 
   await cleanup()
   t.end()
 })
 
-test('corestore default get works', async t => {
+test('basestore default get works', async t => {
   const { client, cleanup } = await createOne()
 
-  const ns1 = client.corestore('blah')
-  const ns2 = client.corestore('blah2')
+  const ns1 = client.basestore('blah')
+  const ns2 = client.basestore('blah2')
 
-  var core = ns1.default()
-  await core.ready()
+  var base = ns1.default()
+  await base.ready()
 
   const buf = Buffer.from('hello world', 'utf8')
-  await core.append(buf)
-  await core.close()
+  await base.append(buf)
+  await base.close()
 
   // we have a timing thing here we should fix
   await new Promise(resolve => setTimeout(resolve, 500))
-  core = ns1.default()
-  await core.ready()
+  base = ns1.default()
+  await base.ready()
 
-  t.same(core.length, 1)
-  t.true(core.writable)
+  t.same(base.length, 1)
+  t.true(base.writable)
 
-  core = ns2.default()
-  await core.ready()
-  t.same(core.length, 0)
+  base = ns2.default()
+  await base.ready()
+  t.same(base.length, 0)
 
   await cleanup()
   t.end()
@@ -253,18 +253,18 @@ test('corestore default get works', async t => {
 test('weak references work', async t => {
   const { client, cleanup } = await createOne()
 
-  const corestore = client.corestore()
-  const core1 = corestore.get()
-  await core1.ready()
+  const basestore = client.basestore()
+  const base1 = basestore.get()
+  await base1.ready()
 
-  const core2 = corestore.get(core1.key, { weak: true })
-  await core2.ready()
+  const base2 = basestore.get(base1.key, { weak: true })
+  await base2.ready()
 
-  await core1.append(Buffer.from('hello world', 'utf8'))
-  t.same(core2.length, 1)
+  await base1.append(Buffer.from('hello world', 'utf8'))
+  t.same(base2.length, 1)
 
-  const closed = new Promise((resolve) => core2.once('close', resolve))
-  await core1.close()
+  const closed = new Promise((resolve) => base2.once('close', resolve))
+  await base1.close()
 
   await closed
   t.pass('closed')
@@ -272,13 +272,13 @@ test('weak references work', async t => {
   t.end()
 })
 
-test('corestore feed event fires', async t => {
+test('basestore feed event fires', async t => {
   const { client, cleanup } = await createOne()
 
-  const corestore = client.corestore()
+  const basestore = client.basestore()
   const emittedFeeds = []
   const emittedProm = new Promise(resolve => {
-    corestore.on('feed', async feed => {
+    basestore.on('feed', async feed => {
       t.same(feed._id, undefined)
       emittedFeeds.push(feed)
       if (emittedFeeds.length === 3) {
@@ -288,21 +288,21 @@ test('corestore feed event fires', async t => {
     })
   })
 
-  const core1 = corestore.get()
-  await core1.ready()
-  const core2 = corestore.get()
-  await core2.ready()
-  const core3 = corestore.get()
-  await core3.ready()
+  const base1 = basestore.get()
+  await base1.ready()
+  const base2 = basestore.get()
+  await base2.ready()
+  const base3 = basestore.get()
+  await base3.ready()
   await emittedProm
 
   async function onAllEmitted () {
     for (const feed of emittedFeeds) {
       await feed.ready()
     }
-    t.true(emittedFeeds[0].key.equals(core1.key))
-    t.true(emittedFeeds[1].key.equals(core2.key))
-    t.true(emittedFeeds[2].key.equals(core3.key))
+    t.true(emittedFeeds[0].key.equals(base1.key))
+    t.true(emittedFeeds[1].key.equals(base2.key))
+    t.true(emittedFeeds[2].key.equals(base3.key))
     await cleanup()
     t.end()
   }
@@ -311,14 +311,14 @@ test('corestore feed event fires', async t => {
 test('can lock and release', async t => {
   const { client, cleanup } = await createOne()
 
-  const corestore = client.corestore()
-  const core1 = corestore.get()
-  await core1.ready()
+  const basestore = client.basestore()
+  const base1 = basestore.get()
+  await base1.ready()
 
-  const release = await core1.lock()
+  const release = await base1.lock()
 
   let unlocked = false
-  const other = core1.lock()
+  const other = base1.lock()
 
   t.pass('locked')
   other.then(() => t.ok(unlocked))
@@ -334,11 +334,11 @@ test('can lock and release', async t => {
 test('cancel a get', async t => {
   const { client, cleanup } = await createOne()
 
-  const corestore = client.corestore()
-  const core = corestore.get()
+  const basestore = client.basestore()
+  const base = basestore.get()
 
-  const prom1 = core.get(42, { ifAvailable: false })
-  const prom2 = core.get(43, { ifAvailable: false })
+  const prom1 = base.get(42, { ifAvailable: false })
+  const prom2 = base.get(43, { ifAvailable: false })
 
   let cancel1 = false
   let cancel2 = false
@@ -347,7 +347,7 @@ test('cancel a get', async t => {
     cancel1 = true
     t.notOk(cancel2, 'cancelled promise 1 first')
     t.ok(err, 'got error')
-    core.cancel(prom2)
+    base.cancel(prom2)
   })
   prom2.catch((err) => {
     cancel2 = true
@@ -355,7 +355,7 @@ test('cancel a get', async t => {
     t.ok(err, 'got error')
   })
 
-  core.cancel(prom1)
+  base.cancel(prom1)
 
   try {
     await prom1
@@ -369,22 +369,22 @@ test('cancel a get', async t => {
 test('onwait', async t => {
   const { client, cleanup } = await createOne()
 
-  const corestore = client.corestore()
-  const core = corestore.get()
+  const basestore = client.basestore()
+  const base = basestore.get()
 
-  const a = core.get(42, {
+  const a = base.get(42, {
     onwait (seq) {
       t.ok('should wait')
       t.same(seq, 42)
-      core.cancel(a)
+      base.cancel(a)
     }
   })
 
-  const b = core.get(43, {
+  const b = base.get(43, {
     onwait (seq) {
       t.ok('should wait')
       t.same(seq, 43)
-      core.cancel(b)
+      base.cancel(b)
     }
   })
 
@@ -402,12 +402,12 @@ test('onwait', async t => {
 test('onwait only on missing blocks', async t => {
   const { client, cleanup } = await createOne()
 
-  const corestore = client.corestore()
-  const core = corestore.get()
-  await core.ready()
+  const basestore = client.basestore()
+  const base = basestore.get()
+  await base.ready()
 
-  await core.append(Buffer.from('hello world', 'utf8'))
-  const block = await core.get(0, {
+  await base.append(Buffer.from('hello world', 'utf8'))
+  const block = await base.get(0, {
     onwait () {
       t.notOk('should not wait')
     }
@@ -418,15 +418,15 @@ test('onwait only on missing blocks', async t => {
   t.end()
 })
 
-test('can run a hypertrie on remote hypercore', async t => {
+test('can run a dwebtrie on remote ddatabse', async t => {
   const { client, cleanup } = await createOne()
 
-  const corestore = client.corestore()
-  const core = corestore.default()
-  await core.ready()
+  const basestore = client.basestore()
+  const base = basestore.default()
+  await base.ready()
 
-  const trie = hypertrie(null, null, {
-    feed: core,
+  const trie = dwebtrie(null, null, {
+    feed: base,
     extension: false,
     valueEncoding: 'utf8'
   })
@@ -448,10 +448,10 @@ test('can run a hypertrie on remote hypercore', async t => {
   t.end()
 })
 
-test('can run a hyperdrive on a remote hypercore', async t => {
+test('can run a ddrive on a remote ddatabse', async t => {
   const { client, cleanup } = await createOne()
 
-  const drive = hyperdrive(client.corestore(), null, {
+  const drive = ddrive(client.basestore(), null, {
     valueEncoding: 'utf8'
   })
   await new Promise(resolve => {
@@ -477,36 +477,36 @@ test('can connect over a tcp socket', async t => {
     port: 8199
   })
 
-  const corestore = client.corestore()
-  const core = corestore.get()
-  await core.ready()
+  const basestore = client.basestore()
+  const base = basestore.get()
+  await base.ready()
 
-  t.same(core.byteLength, 0)
-  t.same(core.length, 0)
-  t.same(core.key.length, 32)
-  t.same(core.discoveryKey.length, 32)
+  t.same(base.byteLength, 0)
+  t.same(base.length, 0)
+  t.same(base.key.length, 32)
+  t.same(base.discoveryKey.length, 32)
 
   await cleanup()
   t.end()
 })
 
-test('handles corestore gc correctly', async t => {
+test('handles basestore gc correctly', async t => {
   const { client, cleanup } = await createOne({
     cacheSize: 1
   })
-  const store1 = client.corestore()
-  const store2 = client.corestore()
+  const store1 = client.basestore()
+  const store2 = client.basestore()
 
-  const core1 = store1.get()
-  await core1.ready()
+  const base1 = store1.get()
+  await base1.ready()
 
-  const core2 = store2.get()
-  const core3 = store2.get(core1.key)
-  await core2.ready()
-  await core3.ready()
+  const base2 = store2.get()
+  const base3 = store2.get(base1.key)
+  await base2.ready()
+  await base3.ready()
 
   try {
-    await core3.append('hello world')
+    await base3.append('hello world')
     t.pass('append did not error')
   } catch (err) {
     t.fail(err)

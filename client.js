@@ -1,1 +1,1 @@
-module.exports = require('@hyperspace/client')
+module.exports = require('@dhub/client')
