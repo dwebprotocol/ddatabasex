@@ -3,7 +3,7 @@
 
 > DDatabases, batteries included.
 
-Hyperspace is a lightweight server that provides remote access to DDatabases and a Hyperswarm instance. It exposes a simple [RPC interface](https://github.com/dhub-org/rpc) that can be accessed with the [Hyperspace client for Node.js](https://github.com/dhub-org/client).
+Hyperspace is a lightweight server that provides remote access to DDatabases and a Hyperswarm instance. It exposes a simple [RPC interface](https://github.com/dwebprotocol/rpc) that can be accessed with the [Hyperspace client for Node.js](https://github.com/dwebprotocol/client).
 
 The RPC API's designed to be minimal, maintaining parity with DDatabase and the [`@basestorex/networker`](https://github.com/andrewosh/basestore-networker) but with few extras.
 
@@ -15,7 +15,7 @@ Features include:
 #### Already using the dDrive daemon?
 With Hyperspace, most of the [dDrive daemon's](https://github.com/ddatabse-protocol/ddrive-daemon) functionality has been moved into "userland" -- instead of providing remote access to Hyperdrives, the regular [`ddrive`](https://github.com/ddatabse-protocol/ddrive) module can be used with remote DDatabases.
 
-If you're currently using the dDrive daemon with FUSE and/or the daemon CLI, take a look at the upgrade instructions in [`@dhub/ddrive`](https://github.com/dhub-org/ddrive-service), which is our new Hyperdrive companion service for handling FUSE/CLI alongside Hyperspace.
+If you're currently using the dDrive daemon with FUSE and/or the daemon CLI, take a look at the upgrade instructions in [`@dhub/ddrive`](https://github.com/dwebprotocol/ddrive-service), which is our new Hyperdrive companion service for handling FUSE/CLI alongside Hyperspace.
 
 __Note: The first time you run Hyperspace, it will detect your old dDrive daemon installation and do an automatic migration. You can postpone the migration by starting the server with the `--no-migrate` flag (`dhub --no-migrate`).__
 
@@ -43,10 +43,10 @@ The `dhub` command supports the following flags:
 
 By default, Hyperspace binds to a UNIX domain socket (or named pipe on Windows) at `~/.dhub/dhub.sock`.
 
-Once the server's started, you can use the client to create and manage remote DDatabases. If you'd like the use the Hyperdrive CLI, check out the [`@dhub/ddrive` docs](https://github.com/dhub-org/ddrive-service).
+Once the server's started, you can use the client to create and manage remote DDatabases. If you'd like the use the Hyperdrive CLI, check out the [`@dhub/ddrive` docs](https://github.com/dwebprotocol/ddrive-service).
 
 ### API
-To work with Hyperspace, you'll probably want to start with the [Node.js client library](https://github.com/dhub-org/client). The README over there provides detailed API info.
+To work with Hyperspace, you'll probably want to start with the [Node.js client library](https://github.com/dwebprotocol/client). The README over there provides detailed API info.
 
 ### Simulator
 
