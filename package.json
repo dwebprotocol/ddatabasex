@@ -1,6 +1,6 @@
 {
   "name": "dhub",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "A CLI for managing dDatabases",
   "main": "index.js",
   "directories": {
