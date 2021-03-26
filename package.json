@@ -1,6 +1,6 @@
 {
   "name": "dhub",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "A CLI for managing dDatabases",
   "main": "index.js",
   "directories": {
@@ -31,7 +31,7 @@
     "basestore-swarm-networking": "^1.0.0",
     "@ddatabase/cache": "^1.0.0",
     "@ddatabase/default-storage": "^1.0.0",
-    "dwebtrie": "^1.0.0",
+    "dwebtrie": "^3.0.0",
     "inspect-custom-symbol": "^1.1.1",
     "nanoresource-promise": "^1.2.2"
   },
