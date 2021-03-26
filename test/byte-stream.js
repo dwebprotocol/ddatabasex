@@ -12,7 +12,7 @@ let client = null
 let cleanup = null
 
 function createLocal (numRecords, recordSize, cb) {
-  const base = client.basestorevault.get()
+  const base = client.basestore.get()
 
   const records = []
   for (let i = 0; i < numRecords; i++) {

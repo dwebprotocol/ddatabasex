@@ -13,7 +13,7 @@ let client = null
 let cleanup = null
 
 function create (key, opts) {
-  const feed = client.basestorevault.get(key)
+  const feed = client.basestore.get(key)
   return dwebtrie(null, null, {
     valueEncoding: 'json',
     ...opts,

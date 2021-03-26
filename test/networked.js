@@ -7,12 +7,12 @@ test('can replicate one base between two daemons', async t => {
   const client1 = clients[0]
   const client2 = clients[1]
 
-  const base1 = client1.basestorevault.get()
+  const base1 = client1.basestore.get()
   await base1.ready()
   await base1.append(Buffer.from('hello world', 'utf8'))
   await client1.network.configure(base1.discoveryKey, { announce: true, lookup: true, flush: true })
 
-  const base2 = client2.basestorevault.get(base1.key)
+  const base2 = client2.basestore.get(base1.key)
   await base2.ready()
   await client2.network.configure(base1.discoveryKey, { announce: false, lookup: true })
   const block = await base2.get(0)
@@ -29,7 +29,7 @@ test('announced discovery key is rejoined on restart', async t => {
   var server1 = servers[0]
   const client2 = clients[1]
 
-  const base1 = client1.basestorevault.get()
+  const base1 = client1.basestore.get()
   await base1.ready()
   await base1.append(Buffer.from('hello world', 'utf8'))
   await client1.network.configure(base1.discoveryKey, { announce: true, lookup: true, flush: true, remember: true })
@@ -39,7 +39,7 @@ test('announced discovery key is rejoined on restart', async t => {
   client1 = newServer.client
   server1 = newServer.server
 
-  const base2 = client2.basestorevault.get(base1.key)
+  const base2 = client2.basestore.get(base1.key)
   await base2.ready()
   await client2.network.configure(base1.discoveryKey, { announce: false, lookup: true })
   const block = await base2.get(0)
@@ -55,7 +55,7 @@ test('peers are set on a remote ddatabase', async t => {
   const firstPeerRemoteKey = servers[0].networker.keyPair.publicKey
 
   const client1 = clients[0]
-  const base1 = client1.basestorevault.get()
+  const base1 = client1.basestore.get()
   await base1.ready()
   await base1.append(Buffer.from('hello world', 'utf8'))
   await client1.network.configure(base1.discoveryKey, { announce: true, lookup: true, flush: true })
@@ -63,7 +63,7 @@ test('peers are set on a remote ddatabase', async t => {
   // Create 4 more peers, and each one should only connect to the first.
   for (let i = 1; i < clients.length; i++) {
     const client = clients[i]
-    const base = client.basestorevault.get(base1.key)
+    const base = client.basestore.get(base1.key)
     await base.ready()
     const peerAddProm = new Promise(resolve => {
       let opened = 0
@@ -90,7 +90,7 @@ test('can get a stored network configuration', async t => {
   const { clients, cleanup } = await createMany(1)
   const client = clients[0]
 
-  const base = client.basestorevault.get()
+  const base = client.basestore.get()
   await base.ready()
   await client.network.configure(base.discoveryKey, { announce: true, lookup: true, flush: true, remember: true })
 
@@ -107,7 +107,7 @@ test('can get a transient network configuration', async t => {
   const { clients, cleanup } = await createMany(1)
   const client = clients[0]
 
-  const base = client.basestorevault.get()
+  const base = client.basestore.get()
   await base.ready()
   await client.network.configure(base.discoveryKey, { announce: false, lookup: true, flush: true, remember: false })
 
@@ -124,9 +124,9 @@ test('can get all network configurations', async t => {
   const { clients, cleanup } = await createMany(1)
   const client = clients[0]
 
-  const base1 = client.basestorevault.get()
-  const base2 = client.basestorevault.get()
-  const base3 = client.basestorevault.get()
+  const base1 = client.basestore.get()
+  const base2 = client.basestore.get()
+  const base3 = client.basestore.get()
   await base1.ready()
   await base2.ready()
   await base3.ready()
@@ -158,7 +158,7 @@ test('can get swarm-level networking events', async t => {
   const { clients, servers, cleanup } = await createMany(5)
 
   const client1 = clients[0]
-  const base1 = client1.basestorevault.get()
+  const base1 = client1.basestore.get()
   await base1.ready()
   await base1.append(Buffer.from('hello world', 'utf8'))
   await client1.network.configure(base1.discoveryKey, { announce: true, lookup: true, flush: true })
@@ -183,7 +183,7 @@ test('can get swarm-level networking events', async t => {
   // Create 4 more peers, and each one should only connect to the first.
   for (let i = 1; i < clients.length; i++) {
     const client = clients[i]
-    const base = client.basestorevault.get(base1.key)
+    const base = client.basestore.get(base1.key)
     await base.ready()
     await client.network.configure(base1.discoveryKey, { announce: false, lookup: true })
   }
@@ -205,7 +205,7 @@ test('an existing base is opened with peers', async t => {
   const { clients, cleanup } = await createMany(5)
 
   const client1 = clients[0]
-  const base1 = client1.basestorevault.get()
+  const base1 = client1.basestore.get()
   await base1.ready()
   await base1.append(Buffer.from('hello world', 'utf8'))
   await client1.network.configure(base1.discoveryKey, { announce: true, lookup: true, flush: true })
@@ -222,14 +222,14 @@ test('an existing base is opened with peers', async t => {
   // Create 4 more peers, and each one should only connect to the first.
   for (let i = 1; i < clients.length; i++) {
     const client = clients[i]
-    const base = client.basestorevault.get(base1.key)
+    const base = client.basestore.get(base1.key)
     await base.ready()
     await client.network.configure(base1.discoveryKey, { announce: false, lookup: true })
   }
 
   await openProm
 
-  const base2 = client1.basestorevault.get(base1.key)
+  const base2 = client1.basestore.get(base1.key)
   await base2.ready()
   // Peers should be set immediately after ready.
   t.same(base2.peers.length, 4)

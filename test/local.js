@@ -7,7 +7,7 @@ const { createOne } = require('./helpers/create')
 test('can open a base', async t => {
   const { client, cleanup } = await createOne()
 
-  const base = client.basestorevault.get()
+  const base = client.basestore.get()
   await base.ready()
 
   t.same(base.byteLength, 0)
@@ -22,7 +22,7 @@ test('can open a base', async t => {
 test('can get a block', async t => {
   const { client, cleanup } = await createOne()
 
-  const base = client.basestorevault.get()
+  const base = client.basestore.get()
   await base.ready()
 
   await base.append(Buffer.from('hello world', 'utf8'))
@@ -36,7 +36,7 @@ test('can get a block', async t => {
 test('length/byteLength update correctly on append', async t => {
   const { client, cleanup } = await createOne()
 
-  const base = client.basestorevault.get()
+  const base = client.basestore.get()
   await base.ready()
 
   let appendedCount = 0
@@ -64,7 +64,7 @@ test('length/byteLength update correctly on append', async t => {
 test('downloaded gives the correct result after append', async t => {
   const { client, cleanup } = await createOne()
 
-  const base = client.basestorevault.get()
+  const base = client.basestore.get()
   await base.ready()
 
   const buf = Buffer.from('hello world', 'utf8')
@@ -79,7 +79,7 @@ test('downloaded gives the correct result after append', async t => {
 test('update with current length returns', async t => {
   const { client, cleanup } = await createOne()
 
-  const base = client.basestorevault.get()
+  const base = client.basestore.get()
   await base.ready()
 
   const buf = Buffer.from('hello world', 'utf8')
@@ -105,7 +105,7 @@ test('update with current length returns', async t => {
 test('appending many large blocks works', async t => {
   const { client, cleanup } = await createOne()
 
-  const base = client.basestorevault.get()
+  const base = client.basestore.get()
   await base.ready()
 
   const NUM_BLOCKS = 200
@@ -125,7 +125,7 @@ test('appending many large blocks works', async t => {
 test('seek works correctly', async t => {
   const { client, cleanup } = await createOne()
 
-  const base = client.basestorevault.get()
+  const base = client.basestore.get()
   await base.ready()
 
   const buf = Buffer.from('hello world', 'utf8')
@@ -156,7 +156,7 @@ test('seek works correctly', async t => {
 test('has works correctly', async t => {
   const { client, cleanup } = await createOne()
 
-  const base = client.basestorevault.get()
+  const base = client.basestore.get()
   await base.ready()
 
   const buf = Buffer.from('hello world', 'utf8')
@@ -175,7 +175,7 @@ test('has works correctly', async t => {
 test('download works correctly', async t => {
   const { client, cleanup } = await createOne()
 
-  const base = client.basestorevault.get()
+  const base = client.basestore.get()
   await base.ready()
 
   const buf = Buffer.from('hello world', 'utf8')
@@ -200,7 +200,7 @@ test('download works correctly', async t => {
 test('valueEncodings work', async t => {
   const { client, cleanup } = await createOne()
 
-  const base = client.basestorevault.get({ valueEncoding: 'utf8' })
+  const base = client.basestore.get({ valueEncoding: 'utf8' })
   await base.ready()
 
   await base.append('hello world')
@@ -211,11 +211,11 @@ test('valueEncodings work', async t => {
   t.end()
 })
 
-test('basestorevault default get works', async t => {
+test('basestore default get works', async t => {
   const { client, cleanup } = await createOne()
 
-  const ns1 = client.basestorevault.namespace('blah')
-  const ns2 = client.basestorevault.namespace('blah2')
+  const ns1 = client.basestore.namespace('blah')
+  const ns2 = client.basestore.namespace('blah2')
 
   var base = ns1.default()
   await base.ready()
@@ -243,10 +243,10 @@ test('basestorevault default get works', async t => {
 test('weak references work', async t => {
   const { client, cleanup } = await createOne()
 
-  const base1 = client.basestorevault.get()
+  const base1 = client.basestore.get()
   await base1.ready()
 
-  const base2 = client.basestorevault.get(base1.key, { weak: true })
+  const base2 = client.basestore.get(base1.key, { weak: true })
   await base2.ready()
 
   await base1.append(Buffer.from('hello world', 'utf8'))
@@ -261,12 +261,12 @@ test('weak references work', async t => {
   t.end()
 })
 
-test('basestorevault feed event fires', async t => {
+test('basestore feed event fires', async t => {
   const { client, cleanup } = await createOne()
 
   const emittedFeeds = []
   const emittedProm = new Promise(resolve => {
-    client.basestorevault.on('feed', async feed => {
+    client.basestore.on('feed', async feed => {
       t.same(feed._id, undefined)
       emittedFeeds.push(feed)
       if (emittedFeeds.length === 3) {
@@ -276,11 +276,11 @@ test('basestorevault feed event fires', async t => {
     })
   })
 
-  const base1 = client.basestorevault.get()
+  const base1 = client.basestore.get()
   await base1.ready()
-  const base2 = client.basestorevault.get()
+  const base2 = client.basestore.get()
   await base2.ready()
-  const base3 = client.basestorevault.get()
+  const base3 = client.basestore.get()
   await base3.ready()
   await emittedProm
 
@@ -334,7 +334,7 @@ test('plugins', async t => {
 test('can lock and release', async t => {
   const { client, cleanup } = await createOne()
 
-  const base1 = client.basestorevault.get()
+  const base1 = client.basestore.get()
   await base1.ready()
 
   const release = await base1.lock()
@@ -356,7 +356,7 @@ test('can lock and release', async t => {
 test('can run a dwebtrie on remote ddatabase', async t => {
   const { client, cleanup } = await createOne()
 
-  const base = client.basestorevault.default()
+  const base = client.basestore.default()
   await base.ready()
 
   const trie = dwebtrie(null, null, {
@@ -385,7 +385,7 @@ test('can run a dwebtrie on remote ddatabase', async t => {
 test('can run a ddrive on a remote ddatabase', async t => {
   const { client, cleanup } = await createOne()
 
-  const drive = ddrive(client.basestorevault, null, {
+  const drive = ddrive(client.basestore, null, {
     extension: false,
     valueEncoding: 'utf8'
   })

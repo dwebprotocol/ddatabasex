@@ -15,7 +15,7 @@
   },
   "keywords": [
     "dDatabases",
-    "basestorevault",
+    "basestore",
     "rpc"
   ],
   "author": "PeepsLabs <peepslabs@gmail.com>",
@@ -25,10 +25,10 @@
   },
   "homepage": "PeepsLabs <peepslabs@gmail.com>",
   "dependencies": {
-    "@dhub/client": "git://github.com/dwebprotocol/dhub-client.git#398a0cd6b4ef55b04da4305912833f908d6eb4e6",
-    "@dhub/rpc": "git://github.com/dwebprotocol/dhub-rpc.git#c8d87231ab41b7e6957dad628c49860a8b776144",
-    "basestorevault": "^1.0.0",
-    "dwebstore-swarm-networking": "^2.0.0",
+    "@dhub/client": "git://github.com/dwebprotocol/dhub-client.git#5d10be167b58c300e3027d3939e6ecd80ff100c0",
+    "@dhub/rpc": "git://github.com/dwebprotocol/dhub-rpc.git#2715b958cab85c8d89ab8e0c708917aca927e076",
+    "basestorex": "^1.0.0",
+    "basestore-swarm-networking": "^1.0.0",
     "@ddatabase/cache": "^1.0.0",
     "@ddatabase/default-storage": "^1.0.0",
     "dwebtrie": "^1.0.0",

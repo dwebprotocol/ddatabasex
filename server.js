@@ -1,15 +1,15 @@
-const Basestore = require('basestorevault')
-const Networker = require('dwebstore-swarm-networking')
+const Basestore = require('basestorex')
+const Networker = require('basestore-swarm-networking')
 const DDatabaseCache = require('@ddatabase/cache')
 const { NanoresourcePromise: Nanoresource } = require('nanoresource-promise/emitter')
 
-const HRPC = require('@dhub/rpc')
+const DWRPC = require('@dhub/rpc')
 const DHubDb = require('./lib/db')
 const ReferenceCounter = require('./lib/references')
 const SessionState = require('./lib/session-state')
 const getSocketName = require('@dhub/rpc/socket')
 
-const BasestoreSession = require('./lib/sessions/basestorevault')
+const BasestoreSession = require('./lib/sessions/basestore')
 const DDatabaseSession = require('./lib/sessions/ddatabase')
 const NetworkSession = require('./lib/sessions/network')
 
@@ -55,7 +55,7 @@ class Plugin {
   }
 }
 
-module.exports = class Hyperspace extends Nanoresource {
+module.exports = class DHubspace extends Nanoresource {
   constructor (opts = {}) {
     super()
 
@@ -76,11 +76,11 @@ module.exports = class Hyperspace extends Nanoresource {
       },
       ifAvailable: true
     }
-    this.basestorevault = new Basestore(basestoreOpts.storage, basestoreOpts)
+    this.basestore = new Basestore(basestoreOpts.storage, basestoreOpts)
 
-    this.server = HRPC.createServer(this._onConnection.bind(this))
+    this.server = DWRPC.createServer(this._onConnection.bind(this))
     this.references = new ReferenceCounter()
-    this.db = new DHubDb(this.basestorevault)
+    this.db = new DHubDb(this.basestore)
     this.networker = null
 
     this.noAnnounce = !!opts.noAnnounce
@@ -105,9 +105,9 @@ module.exports = class Hyperspace extends Nanoresource {
   // Nanoresource Methods
 
   async _open () {
-    await this.basestorevault.ready()
+    await this.basestore.ready()
     await this.db.open()
-    this.networker = new Networker(this.basestorevault, this._networkOpts)
+    this.networker = new Networker(this.basestore, this._networkOpts)
     await this.networker.listen()
     this._registerBaseTimeouts()
     await this._rejoin()
@@ -123,7 +123,7 @@ module.exports = class Hyperspace extends Nanoresource {
     await this.networker.close()
     await this.db.close()
     await new Promise((resolve, reject) => {
-      this.basestorevault.close(err => {
+      this.basestore.close(err => {
         if (err) return reject(err)
         return resolve(null)
       })
@@ -165,7 +165,7 @@ module.exports = class Hyperspace extends Nanoresource {
       callAllInSet(peerAddSet)
     })
 
-    this.basestorevault.on('feed', base => {
+    this.basestore.on('feed', base => {
       const discoveryKey = base.discoveryKey
       const peerAddSet = new Set()
       const flushSet = new Set()
@@ -235,9 +235,9 @@ module.exports = class Hyperspace extends Nanoresource {
         return this._getPlugin(name).status()
       }
     })
-    client.basestorevault.onRequest(new BasestoreSession(client, sessionState, this.basestorevault))
+    client.basestore.onRequest(new BasestoreSession(client, sessionState, this.basestore))
     client.ddatabase.onRequest(new DDatabaseSession(client, sessionState))
-    client.network.onRequest(new NetworkSession(client, sessionState, this.basestorevault, this.networker, this.db, this._transientNetworkConfigurations, {
+    client.network.onRequest(new NetworkSession(client, sessionState, this.basestore, this.networker, this.db, this._transientNetworkConfigurations, {
       noAnnounce: this.noAnnounce
     }))
   }
